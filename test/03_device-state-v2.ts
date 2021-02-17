@@ -85,6 +85,21 @@ describe('Device State v2', () => {
 		mockery.deregisterMock('../src/lib/device-online-state');
 	});
 
+	describe('Simple Model Check', () => {
+		it('should have the required info without any releases', async () => {
+			const tempDevice = await fakeDevice.provisionDevice(admin, applicationId);
+			const state = await tempDevice.getState();
+
+			expect(state.local.apps).to.have.property(`${applicationId}`);
+			expect(state.local.apps[`${applicationId}`])
+				.to.have.property('name')
+				.which.equals(fx.applications.app1.app_name);
+			expect(state.local.apps[`${applicationId}`]).to.have.property('services');
+			expect(state.local.apps[`${applicationId}`]).to.have.property('volumes');
+			expect(state.local.apps[`${applicationId}`]).to.have.property('networks');
+		});
+	});
+
 	describe(`API heartbeat state`, () => {
 		describe('Poll Interval Acquisition', () => {
 			it('Should see default value when not overridden', async () => {
@@ -167,20 +182,22 @@ describe('Device State v2', () => {
 
 			let deviceUserRequestedState: fakeDevice.Device;
 
+			const stateChangeEventSpy = sinon.spy();
 			before(async () => {
 				deviceUserRequestedState = await fakeDevice.provisionDevice(
 					admin,
 					applicationId,
 				);
-			});
 
-			const stateChangeEventSpy = sinon.spy();
-			stateMock.getInstance().on('change', (args) => {
-				if (![device.uuid, deviceUserRequestedState.uuid].includes(args.uuid)) {
-					return;
-				}
+				stateMock.getInstance().on('change', (args) => {
+					if (
+						![device.uuid, deviceUserRequestedState.uuid].includes(args.uuid)
+					) {
+						return;
+					}
 
-				stateChangeEventSpy(args);
+					stateChangeEventSpy(args);
+				});
 			});
 
 			it('Should see the stats event emitted more than three times', async () => {
@@ -198,18 +215,18 @@ describe('Device State v2', () => {
 					getActor: () => device,
 					heartbeatAfterGet: DeviceOnlineStates.Online,
 					getDevice: () => device,
-					getStateV2: () => device.getStateV2(),
+					getState: () => device.getState(),
 				},
 				{
 					tokenType: 'user token',
 					getActor: () => admin,
 					heartbeatAfterGet: DeviceOnlineStates.Unknown,
 					getDevice: () => deviceUserRequestedState,
-					getStateV2: () =>
-						fakeDevice.getStateV2(admin, deviceUserRequestedState.uuid),
+					getState: () =>
+						fakeDevice.getState(admin, deviceUserRequestedState.uuid),
 				},
 			].forEach(
-				({ tokenType, getActor, heartbeatAfterGet, getDevice, getStateV2 }) => {
+				({ tokenType, getActor, heartbeatAfterGet, getDevice, getState }) => {
 					describe(`Given a ${tokenType}`, function () {
 						it('Should see state initially as "unknown"', async () => {
 							const { body } = await supertest(getActor())
@@ -226,7 +243,7 @@ describe('Device State v2', () => {
 
 						it(`Should have the "${heartbeatAfterGet}" heartbeat state after a state poll`, async () => {
 							stateChangeEventSpy.resetHistory();
-							await getStateV2();
+							await getState();
 
 							if (heartbeatAfterGet !== DeviceOnlineStates.Unknown) {
 								await waitFor(() => stateChangeEventSpy.called);
@@ -284,7 +301,7 @@ describe('Device State v2', () => {
 						it(`Should see state become "online" again, following a state poll`, async () => {
 							stateChangeEventSpy.resetHistory();
 
-							await getStateV2();
+							await getState();
 
 							await waitFor(() => stateChangeEventSpy.called);
 

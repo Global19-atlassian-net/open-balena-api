@@ -276,6 +276,8 @@ Term: version
 Term: vpn address
 	Concept Type: Short Text (Type)
 
+Term: install type
+	Concept type: Short Text (Type)
 
 -- Complex terms
 
@@ -454,6 +456,10 @@ Fact type: application has uuid
 	Necessity: each application has exactly one uuid.
 	Necessity: each uuid is of exactly one application.
 	Necessity: each application has a uuid that has a Length (Type) that is equal to 32.
+Fact type: application is public
+Fact type: application has install type
+	Necessity: each application has exactly one install type
+	Definition: "hostapp" or "hostapp extension" or "supervised" or "supervisor"
 
 -- service instance
 
@@ -547,6 +553,9 @@ Fact type: device should be running release
 Fact type: device1 is managed by device2
 	Synonymous Form: device2 manages device1
 	Necessity: each device1 is managed by at most one device2.
+Fact type: device should be managed by release
+	Synonymous Form: release should manage device
+	Necessity: each device should be managed by at most one release
 
 
 -- application config variable
@@ -774,3 +783,7 @@ Rule: It is necessary that each application that owns a release1 that has a stat
 Rule: It is necessary that each release that should be running on a device, has a status that is equal to "success" and belongs to an application1 that the device belongs to.
 Rule: It is necessary that each release that should be running on an application, has a status that is equal to "success" and belongs to the application.
 Rule: It is necessary that each release that contains at least 2 images, belongs to an application that has an application type that supports multicontainer.
+
+-- native supervisor release rules, separated for legibility
+Rule: It is necessary that each release that should manage a device, has a status that is equal to "success" and has exactly one release version.
+Rule: It is necessary that each release that should manage a device that is of a device type1, belongs to an application that is for a device type2 that is of a cpu architecture that is supported by the device type1.
