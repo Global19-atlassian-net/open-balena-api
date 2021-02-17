@@ -1,4 +1,47 @@
 - commits:
+    - subject: Add feature & tests
+      hash: 3298ed2f8a5a2ccf61fb58d1af68432e8b622a2a
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Rich Bayliss <rich@balena.io>
+        signed-off-by: Rich Bayliss <rich@balena.io>
+      author: Rich Bayliss
+      nested: []
+    - subject: Refactor tests to support new model
+      hash: 760b13d2e4ae0fca833ab89efb06028f9744c925
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Rich Bayliss <rich@balena.io>
+        signed-off-by: Rich Bayliss <rich@balena.io>
+      author: Rich Bayliss
+      nested: []
+    - subject: Add model changes
+      hash: d8d6a179c4755dbe2e334348b23c99f19be82a30
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Rich Bayliss <rich@balena.io>
+        signed-off-by: Rich Bayliss <rich@balena.io>
+      author: Rich Bayliss
+      nested: []
+    - subject: Expose SYSTEM_APPS via config
+      hash: bc974176e83b39156048dbf6380ae33f0e33abee
+      body: ''
+      footer:
+        Change-type: patch
+        change-type: patch
+        Signed-off-by: Rich Bayliss <rich@balena.io>
+        signed-off-by: Rich Bayliss <rich@balena.io>
+      author: Rich Bayliss
+      nested: []
+  version: 0.128.1
+  date: 2021-02-17T14:41:56.696Z
+- commits:
     - subject: Stop exposing `/resin/`
       hash: dfc621f326462a8399ab1b2f53e282fa7cb2bcbe
       body: ''
